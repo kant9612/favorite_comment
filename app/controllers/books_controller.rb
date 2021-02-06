@@ -8,7 +8,13 @@ class BooksController < ApplicationController
   end
 
   def index
-    @books = Book.all
+    @books = if params[:search]
+      #searchされた場合は、原文+.where('name LIKE ?', "%#{params[:search]}%")を実行
+      Book.where('name LIKE ?', "%#{params[:search]}%")
+    else
+      #searchされていない場合は、原文そのまま
+      Book.all
+    end
     @book = Book.new
   end
 
@@ -42,7 +48,7 @@ class BooksController < ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:title, :body)
+    params.require(:book).permit(:title, :body,)
   end
 
   def ensure_correct_user
