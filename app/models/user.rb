@@ -9,7 +9,6 @@ class User < ApplicationRecord
 	has_many :book_comments, dependent: :destroy
   attachment :profile_image, destroy: false
 
-  # フォロー機能の追加
   has_many :relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
   has_many :reverse_of_relationships, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
   has_many :followings, through: :relationships, source: :followed
@@ -25,6 +24,15 @@ class User < ApplicationRecord
 
   def following?(user)
     followings.include?(user)
+  end
+
+  # 検索機能の追加
+  def self.search(search) #ここでのself.はUser.を意味する
+    if search
+      where(['name LIKE ?', "%#{search}%"]) #検索とnameの部分一致を表示。#User.は省略
+    else
+      all #全て表示。#User.は省略
+    end
   end
   # ここまで
 

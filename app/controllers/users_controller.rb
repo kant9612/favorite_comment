@@ -9,7 +9,13 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.all
+    @users = if params[:search]
+      #searchされた場合は、原文+.where('name LIKE ?', "%#{params[:search]}%")を実行
+      User.where('name LIKE ?', "%#{params[:search]}%")
+    else
+      #searchされていない場合は、原文そのまま
+      User.all
+    end
     @book = Book.new
   end
 
